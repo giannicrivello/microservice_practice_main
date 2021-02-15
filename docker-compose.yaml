@@ -1,0 +1,30 @@
+version: "3.8"
+   
+services:
+    backend:
+        build: .
+        container_name: backend
+        command: python main.py
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - "5000:5000"
+        depends_on:
+            - pgdbmain
+    queue: 
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      command: python consumer.py
+      volumes:
+          - .:/usr/src/app
+      depends_on:
+        - pgdbmain
+
+    pgdbmain:
+        image: postgres
+        container_name: pgdbmain
+        environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
